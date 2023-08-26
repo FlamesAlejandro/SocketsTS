@@ -9,6 +9,8 @@ export const connectToServer = () => {
 
 const addListeners = (socket: Socket) => {
     const serverStatusLabel = document.querySelector('#server-status')!
+    const messageForm = document.querySelector<HTMLFormElement>('#message-form')!
+    const messageInput = document.querySelector<HTMLInputElement>('#message-input')!
     const clientsUl = document.querySelector('#clients-ul')!
     // socket para ver el estado del cliente
     socket.on('connect', () =>{
@@ -26,5 +28,18 @@ const addListeners = (socket: Socket) => {
             `
         });
         clientsUl.innerHTML = clientsHtml;
+    })
+
+    // mensaje para que escuche el servidor
+    messageForm.addEventListener('submit', (event) => {
+        event.preventDefault();
+        if( messageInput.value.trim().length <= 0 ) return;
+
+        socket.emit('message-from-client', { 
+            id: 'YO!!', 
+            message: messageInput.value 
+        });
+
+        messageInput.value = '';
     })
 }
